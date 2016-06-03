@@ -246,7 +246,13 @@
    (row "last name" [:input.form-control {:field :text :id :last-name}])
    (row "age" [:input.form-control {:field :numeric :id :age}])
    (row "email" [:input.form-control {:field :text :id :email}])
-   (row "comments" [:textarea.form-control {:field :textarea :id :comments}])])
+   (row "comments" [:textarea.form-control {:field :textarea :id :comments}])
+   (row "checkbox" [:input.form-control {:field :checkbox :id :happy-bindings} "car"])
+   ;;(row "checkbox" [:input {:field :checkbox :id :happy-bindings} "bike"])
+   (row "range" [:input.form-control {:field :range :min 0 :max 500 :id :some-range}])
+   (row "radio" [:input.form-control {:field :radio :value :a :name :radioselection} "foo"])
+   (row "radio" [:input.form-control {:field :radio :value :b :name :radioselection} "bar"])
+   (row "radio" [:input.form-control {:field :radio :value :c :name :radioselection} "baz"])])
 
 (defn form []
   (let [doc (atom {:first-name "John" :last-name "Doe" :age 35})]
