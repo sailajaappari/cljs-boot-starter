@@ -1,5 +1,6 @@
 (ns cljs-boot-starter.client
-  (:require [reagent.core :as ra :refer [atom render]]))
+  (:require [reagent.core :as ra :refer [atom render]]
+            [reagent-forms.core :refer [bind-fields]]))
 
 (enable-console-print!)
 
@@ -156,16 +157,16 @@
 
 ;;BMI calculator
 
-(def bmi-data (atom {:height 180 :weight 80}))
+#_(def bmi-data (atom {:height 180 :weight 80}))
 
-(defn calc-bmi []
+#_(defn calc-bmi []
   (let [{:keys [height weight bmi] :as data} @bmi-data
         h (/ height 100)]
     (if (nil? bmi)
       (assoc data :bmi (/ weight (* h h)))
       (assoc data :weight (* bmi h h)))))
 
-(defn slider [param value min max]
+#_(defn slider [param value min max]
   [:input {:type "range" 
            :value value 
            :min min 
@@ -176,7 +177,7 @@
                         (when (not= param :bmi)
                           (swap! bmi-data assoc :bmi nil)))}])
 
-(defn bmi-component []
+#_(defn bmi-component []
   (let [{:keys [weight height bmi]} (calc-bmi)
         [color diagnose] (cond
                           (< bmi 18.5) ["orange" "underweight"]
@@ -197,13 +198,67 @@
       [slider :bmi bmi 10 50]]]))
 
 
+;; simple reagent component
+
+#_(defn hello [name]
+  [:div "Hello " name])
+
+#_(defn page [body]
+  [:div.page
+   [:div.header "This is header"]
+   body
+   [:div.footer "This is footer"]])
+
+#_(def x (atom 0))
+#_(js/console.log @x)
+#_(reset! x 10)
+#_(js/console.log @x)
+#_(swap! x + 5)
+#_(js/console.log @x)
 
 
-#_(defn init []
-  (ra/render-component [simple-component] (.-body js/document)))
+#_(def expanded (atom true))
 
+#_(defn on-header-click []
+  (swap! expanded not))
+
+#_(defn expandable-view []
+  [:div#expandable
+    [:div#header {:on-click on-header-click}
+      "Click me to expand and collapse the body"]
+    (if @expanded
+      [:div.header "I am the body"])])
+
+
+
+;; reagent forms
+     
+   ;;binding the form to a document
+
+(defn row [label input]
+  [:div.row
+   [:div.col-md-2 [:label label]]
+   [:div.col-md-5 input]])
+
+(def form-template
+  [:div
+   (row "first name" [:input.form-control {:field :text :id :first-name}])
+   (row "last name" [:input.form-control {:field :text :id :last-name}])
+   (row "age" [:input.form-control {:field :numeric :id :age}])
+   (row "email" [:input.form-control {:field :text :id :email}])
+   (row "comments" [:textarea.form-control {:field :textarea :id :comments}])])
+
+(defn form []
+  (let [doc (atom {:first-name "John" :last-name "Doe" :age 35})]
+    (fn []
+      [:div.container
+       [:div.page-header [:h1 "Reagent Form"]]
+       [bind-fields form-template doc]
+       [:label (str @doc)]])))
 
 (defn init []
-  (render [bmi-component] (.getElementById js/document "my-app-area")))
+  (render [form] (.getElementById js/document "my-app-area")))
 
 (init)
+
+
