@@ -240,7 +240,7 @@
    [:div.col-md-2 [:label label]]
    [:div.col-md-5 input]])
 
-(def form-template
+#_(def form-template
   [:div
    (row "first name" [:input.form-control {:field :text :id :first-name}])
    (row "last name" [:input.form-control {:field :text :id :last-name}])
@@ -254,13 +254,35 @@
    (row "radio" [:input.form-control {:field :radio :value :b :name :radioselection} "bar"])
    (row "radio" [:input.form-control {:field :radio :value :c :name :radioselection} "baz"])])
 
-(defn form []
+
+#_(defn form []
   (let [doc (atom {:first-name "John" :last-name "Doe" :age 35})]
     (fn []
       [:div.container
        [:div.page-header [:h1 "Reagent Form"]]
-       [bind-fields form-template doc]
+       [bind-fields 
+         form-template 
+         doc]
        [:label (str @doc)]])))
+
+(def form-template
+ [:div
+   [:h3 "BMI Calculator"]
+   (row "Height" [:input {:field :numeric :id :height}])
+   (row "Weight" [:input {:field :numeric :id :weight}])
+   (row "BMI" [:input {:field :numeric :id :bmi :disabled true}])])
+
+
+(defn bmi-calculation
+  [[id] value {:keys [height weight] :as document}]
+  (assoc document :bmi (/ weight (* height height))))
+
+(defn form []
+   (let [doc (atom {:height 200 :weight 100})]
+    (fn []
+      [:div
+       [bind-fields form-template doc bmi-calculation]
+       [:p (str @doc)]])))
 
 (defn init []
   (render [form] (.getElementById js/document "my-app-area")))
