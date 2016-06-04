@@ -270,7 +270,10 @@
    [:h3 "BMI Calculator"]
    (row "Height" [:input {:field :numeric :id :height}])
    (row "Weight" [:input {:field :numeric :id :weight}])
-   (row "BMI" [:input {:field :numeric :id :bmi :disabled true}])])
+   (row "BMI" [:input {:field :numeric :id :bmi :disabled true}])
+   (row "Date Of Birth" [:input {:field :datepicker :id :birthday :date-format "yyyy/mm/dd" :inline true}])
+   (row "Name" [:input {:field :text :id :first-name :touch-event :on-touch-start}])
+   (row "Initial" [:input {:field :text :id :last-name :touch-event :on-touch-start}])])
 
 
 (defn bmi-calculation
